@@ -9,6 +9,7 @@ dotenv.config();
 
 // Routes
 import authorRoutes from "./routes/authorRoutes";
+import bookRoutes from "./routes/bookRoutes";
 
 const app: Application = express();
 
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 
 // Routes setup
 app.use("/api/authors", authorRoutes);
+app.use("/api/books", bookRoutes);
 // Test route
 app.get("/", (req: Request, res: Response): void => {
   res.send("📚 Book Review API (TS) is running 🚀");
