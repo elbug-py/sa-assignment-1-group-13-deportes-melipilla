@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+import apiRouter from "./routes/api";
 import mongoose from "mongoose";
 import { setupSwagger } from "./swagger";
 import cors from "cors";
@@ -18,6 +19,9 @@ app.use(morgan("dev"));
 app.get("/", (req: Request, res: Response): void => {
   res.send("📚 Book Review API (TS) is running 🚀");
 });
+
+// API routes
+app.use("/api", apiRouter);
 
 // Mongo connection
 mongoose
