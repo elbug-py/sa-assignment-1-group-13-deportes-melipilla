@@ -7,6 +7,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Routes
+import authorRoutes from "./routes/authorRoutes";
+
 const app: Application = express();
 
 // Middleware
@@ -14,6 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Routes setup
+app.use("/api/authors", authorRoutes);
 // Test route
 app.get("/", (req: Request, res: Response): void => {
   res.send("📚 Book Review API (TS) is running 🚀");
