@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Inicio · SA Library{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Panel</h1>
+<div class="row g-3">
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'authors_table' %}">
+      <div class="card-body">
+        <h5 class="card-title">Autores</h5>
+        <p class="card-text small mb-0">#Libros · Promedio score · Ventas totales</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'top_rated' %}">
+      <div class="card-body">
+        <h5 class="card-title">Top 10 mejor valorados</h5>
+        <p class="card-text small mb-0">Incluye reseña más popular y peor reseña</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'top_selling' %}">
+      <div class="card-body">
+        <h5 class="card-title">Top 50 más vendidos</h5>
+        <p class="card-text small mb-0">Ventas libro · Ventas autor · Top-5 año publicación</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'search_books' %}">
+      <div class="card-body">
+        <h5 class="card-title">Buscador</h5>
+        <p class="card-text small mb-0">Búsqueda por palabras en descripción</p>
+      </div>
+    </a>
+  </div>
+</div>
+{% endblock %}
