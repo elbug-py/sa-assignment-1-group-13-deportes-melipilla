@@ -1,0 +1,34 @@
+taspee/Documents/arch/sa-assignment-1-group-13-deportes-melipilla/frontend/templates/authors/create.html -->
+{% extends "base.html" %}
+{% block title %}Crear Autor{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Crear Nuevo Autor</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'authors_table' %}">Volver</a>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-lg-6">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Nombre *</label>
+        <input type="text" class="form-control" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Fecha de Nacimiento</label>
+        <input type="date" class="form-control" name="birthday">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">País de Origen</label>
+        <input type="text" class="form-control" name="origin_country">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-control" name="description" rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Crear Autor</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
