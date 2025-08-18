@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Top 10 mejor valorados{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Top 10 libros mejor valorados</h1>
+<div class="table-responsive">
+<table class="table table-sm align-middle">
+  <thead><tr>
+    <th>Libro</th><th>Autor</th><th class="text-end">Score prom.</th>
+    <th>Mejor reseña (más popular)</th><th>Peor reseña</th>
+  </tr></thead>
+  <tbody>
+    {% for row in items %}
+      <tr>
+        <td>{{ row.book.name }}</td>
+        <td>{{ row.book.author.name }}</td>
+        <td class="text-end">{{ row.avg_score|floatformat:2 }}</td>
+        <td>
+          {% if row.best %}<div><strong>{{ row.best.score }}/5</strong> · 👍 {{ row.best.up_votes }}<br>{{ row.best.review|truncatechars:120 }}</div>{% else %}<em>—</em>{% endif %}
+        </td>
+        <td>
+          {% if row.worst %}<div><strong>{{ row.worst.score }}/5</strong> · 👍 {{ row.worst.up_votes }}<br>{{ row.worst.review|truncatechars:120 }}</div>{% else %}<em>—</em>{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
