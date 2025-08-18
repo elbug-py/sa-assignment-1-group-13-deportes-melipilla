@@ -1,7 +1,7 @@
 import mongoengine as me
 
 class Author(me.Document):
-    name = me.StringField(required=True, max_length=200)
+    name = me.StringField(required=True, max_length=200, unique=True)
     birthday = me.DateField()
     origin_country = me.StringField(max_length=100)
     description = me.StringField()
@@ -15,6 +15,11 @@ class Book(me.Document):
     name = me.StringField(required=True, max_length=200)
     summary = me.StringField()
     publication_date = me.DateField()
+    meta = {
+        'indexes': [
+            {'fields': ['author', 'name'], 'unique': True}
+        ]
+    }
 
     def __str__(self):
         return self.name
@@ -30,3 +35,8 @@ class Sale(me.Document):
     book = me.ReferenceField(Book, reverse_delete_rule=me.CASCADE, required=True)
     count = me.IntField(min_value=0, required=True)
     year = me.IntField(required=True)
+    meta = {
+        'indexes': [
+            {'fields': ['book', 'year'], 'unique': True}
+        ]
+    }
