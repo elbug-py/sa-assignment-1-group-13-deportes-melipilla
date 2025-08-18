@@ -1,8 +1,6 @@
-
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import get_object_or_404
 from core.models import Author
 
 
@@ -51,7 +49,10 @@ def author_create(request):
 @require_http_methods(["PUT"])
 def author_edit(request, author_id):
     import json
-    author = get_object_or_404(Author, id=author_id)
+    try:
+        author = Author.objects.get(id=author_id)
+    except Author.DoesNotExist:
+        return HttpResponseNotFound("Author not found")
     try:
         data = json.loads(request.body)
         author.name = data.get("name", author.name)
@@ -73,6 +74,26 @@ def author_edit(request, author_id):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def author_delete(request, author_id):
-    author = get_object_or_404(Author, id=author_id)
+    try:
+        author = Author.objects.get(id=author_id)
+    except Author.DoesNotExist:
+        return HttpResponseNotFound("Author not found")
     author.delete()
     return JsonResponse({"result": "deleted"})
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def author_detail(request, author_id):
+    try:
+        author = Author.objects.get(id=author_id)
+    except Author.DoesNotExist:
+        return HttpResponseNotFound("Author not found")
+    data = {
+        "id": str(author.id),
+        "name": author.name,
+        "birthday": author.birthday,
+        "origin_country": author.origin_country,
+        "description": author.description,
+    }
+    return JsonResponse(data)

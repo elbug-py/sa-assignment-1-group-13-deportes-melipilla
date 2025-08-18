@@ -1,8 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import get_object_or_404
 from core.models import Review, Book
+
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -18,6 +18,7 @@ def review_list(request):
         for review in reviews
     ]
     return JsonResponse({"reviews": data})
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -41,15 +42,18 @@ def review_create(request):
         "up_votes": review.up_votes,
     }, status=201)
 
+
 @csrf_exempt
 @require_http_methods(["PUT"])
 def review_edit(request, review_id):
     import json
-    review = get_object_or_404(Review, id=review_id)
+    try:
+        review = Review.objects.get(id=review_id)
+    except Review.DoesNotExist:
+        return HttpResponseNotFound("Review not found")
     try:
         data = json.loads(request.body)
         if "book" in data:
-            from core.models import Book
             review.book = Book.objects.get(id=data["book"])
         if "score" in data:
             review.score = data["score"]
@@ -65,9 +69,29 @@ def review_edit(request, review_id):
         "up_votes": review.up_votes,
     })
 
+
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def review_delete(request, review_id):
-    review = get_object_or_404(Review, id=review_id)
+    try:
+        review = Review.objects.get(id=review_id)
+    except Review.DoesNotExist:
+        return HttpResponseNotFound("Review not found")
     review.delete()
     return JsonResponse({"result": "deleted"})
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def review_detail(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+    except Review.DoesNotExist:
+        return HttpResponseNotFound("Review not found")
+    data = {
+        "id": str(review.id),
+        "book": str(review.book.id) if review.book else None,
+        "score": review.score,
+        "up_votes": review.up_votes,
+    }
+    return JsonResponse(data)
