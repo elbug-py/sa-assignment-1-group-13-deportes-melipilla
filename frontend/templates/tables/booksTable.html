@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Libros{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Libros</h1>
+  <a class="btn btn-primary" href="{% url 'book_create' %}">Nuevo Libro</a>
+</div>
+
+<form class="mb-3">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input class="form-control" name="name" placeholder="Filtrar por nombre" value="{{ filters.name }}">
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="author" placeholder="Filtrar por autor" value="{{ filters.author }}">
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-primary">Filtrar</button>
+      <a class="btn btn-outline-secondary" href="?">Limpiar</a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th><a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=name&order={% if sort == 'name' and order == 'asc' %}desc{% else %}asc{% endif %}">Libro</a></th>
+        <th><a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=author&order={% if sort == 'author' and order == 'asc' %}desc{% else %}asc{% endif %}">Autor</a></th>
+        <th><a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=date&order={% if sort == 'date' and order == 'asc' %}desc{% else %}asc{% endif %}">Fecha Publicación</a></th>
+        <th>Resumen</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in page_obj.object_list %}
+      <tr>
+        <td><a href="{% url 'book_detail' book.id %}">{{ book.name }}</a></td>
+        <td>{{ book.author.name }}</td>
+        <td>{{ book.publication_date|default:"-" }}</td>
+        <td>{{ book.summary|truncatechars:80|default:"-" }}</td>
+        <td>
+          <a class="btn btn-sm btn-outline-info" href="{% url 'book_reviews' book.id %}">Reseñas</a>
+          <a class="btn btn-sm btn-outline-success" href="{% url 'book_sales' book.id %}">Ventas</a>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'book_edit' book.id %}">Editar</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'book_delete' book.id %}">Eliminar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center text-muted">No hay libros</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<nav>
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?{{ base_qs }}&page={{ page_obj.previous_page_number }}">Anterior</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?{{ base_qs }}&page={{ page_obj.next_page_number }}">Siguiente</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}
