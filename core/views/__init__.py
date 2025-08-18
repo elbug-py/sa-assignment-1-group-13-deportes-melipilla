@@ -1,4 +1,4 @@
-from .author_view import (
+from .author_views import (
     author_list,
     author_create,
     author_edit,
@@ -6,7 +6,7 @@ from .author_view import (
     author_detail,
 )
 
-from .book_view import (
+from .book_views import (
     book_list,
     book_create,
     book_edit,
@@ -14,10 +14,18 @@ from .book_view import (
     book_detail,
 )
 
-from .review_view import (
+from .review_views import (
     review_list,
     review_create,
     review_edit,
     review_delete,
     review_detail,
+)
+
+from .sale_views import (
+    sale_list,
+    sale_create,
+    sale_edit,
+    sale_delete,
+    sale_detail,
 )

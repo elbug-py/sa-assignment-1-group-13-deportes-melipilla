@@ -2,7 +2,8 @@ from django.urls import path
 from core.views import (
     author_list, author_create, author_edit, author_delete, author_detail,
     book_list, book_create, book_edit, book_delete, book_detail,
-    review_list, review_create, review_edit, review_delete, review_detail
+    review_list, review_create, review_edit, review_delete, review_detail,
+    sale_list, sale_create, sale_edit, sale_delete, sale_detail
 )
 
 urlpatterns = [
@@ -21,4 +22,9 @@ urlpatterns = [
     path("reviews/<review_id>/", review_detail, name="review_detail"),
     path("reviews/<review_id>/edit/", review_edit, name="review_edit"),
     path("reviews/<review_id>/delete/", review_delete, name="review_delete"),
+    path("sales/", sale_list, name="sale_list"),
+    path("sales/new/", sale_create, name="sale_create"),
+    path("sales/<sale_id>/", sale_detail, name="sale_detail"),
+    path("sales/<sale_id>/edit/", sale_edit, name="sale_edit"),
+    path("sales/<sale_id>/delete/", sale_delete, name="sale_delete"),
 ]
