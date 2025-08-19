@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ author.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">{{ author.name }}</h1>
+  <div>
+    <a class="btn btn-outline-primary" href="{% url 'author_edit' author.id %}">Editar</a>
+    <a class="btn btn-outline-danger" href="{% url 'author_delete' author.id %}">Eliminar</a>
+    <a class="btn btn-outline-secondary" href="{% url 'authors_table' %}">Volver</a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Información del Autor</h5>
+        <table class="table table-borderless">
+          <tr>
+            <td><strong>Nombre:</strong></td>
+            <td>{{ author.name }}</td>
+          </tr>
+          <tr>
+            <td><strong>Fecha de Nacimiento:</strong></td>
+            <td>{{ author.birthday|default:"-" }}</td>
+          </tr>
+          <tr>
+            <td><strong>País de Origen:</strong></td>
+            <td>{{ author.origin_country|default:"-" }}</td>
+          </tr>
+          <tr>
+            <td><strong>Descripción:</strong></td>
+            <td>{{ author.description|default:"-" }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
