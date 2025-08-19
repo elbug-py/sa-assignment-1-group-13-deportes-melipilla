@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Agregar Reseña - {{ book.name }}{% endblock %}
+{% block title %}Add Review - {{ book.name }}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
   <div>
-    <h1 class="h4 mb-1">Agregar Reseña</h1>
-    <p class="text-muted mb-0">Para "{{ book.name }}" por {{ book.author.name }}</p>
+    <h1 class="h4 mb-1">Add Review</h1>
+    <p class="text-muted mb-0">For “{{ book.name }}” by {{ book.author.name }}</p>
   </div>
-  <a class="btn btn-outline-secondary" href="{% url 'book_reviews' book.id %}">Cancelar</a>
+  <a class="btn btn-outline-secondary" href="{% url 'book_reviews' book.id %}">Cancel</a>
 </div>
 
 <div class="row">
@@ -16,28 +16,28 @@
         <form method="post">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label">Puntaje *</label>
+            <label class="form-label">Score *</label>
             <select class="form-control" name="score" required>
-              <option value="">Seleccionar puntaje</option>
-              <option value="5">5 - Excelente ★★★★★</option>
-              <option value="4">4 - Muy bueno ★★★★☆</option>
-              <option value="3">3 - Bueno ★★★☆☆</option>
-              <option value="2">2 - Regular ★★☆☆☆</option>
-              <option value="1">1 - Malo ★☆☆☆☆</option>
-              <option value="0">0 - Pésimo ☆☆☆☆☆</option>
+              <option value="">Select score</option>
+              <option value="5">5 - Excellent ★★★★★</option>
+              <option value="4">4 - Very good ★★★★☆</option>
+              <option value="3">3 - Good ★★★☆☆</option>
+              <option value="2">2 - Fair ★★☆☆☆</option>
+              <option value="1">1 - Poor ★☆☆☆☆</option>
+              <option value="0">0 - Terrible ☆☆☆☆☆</option>
             </select>
-            <div class="form-text">Califica el libro del 0 al 5.</div>
+            <div class="form-text">Rate the book from 0 to 5.</div>
           </div>
           
           <div class="mb-3">
-            <label class="form-label">Votos Positivos</label>
+            <label class="form-label">Upvotes</label>
             <input type="number" class="form-control" name="up_votes" min="0" value="0">
-            <div class="form-text">Número inicial de votos positivos para esta reseña (opcional).</div>
+            <div class="form-text">Initial number of upvotes for this review (optional).</div>
           </div>
           
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-outline-secondary" href="{% url 'book_reviews' book.id %}">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Agregar Reseña</button>
+            <a class="btn btn-outline-secondary" href="{% url 'book_reviews' book.id %}">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add Review</button>
           </div>
         </form>
       </div>
@@ -47,15 +47,15 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-body">
-        <h6 class="card-title">Información del Libro</h6>
+        <h6 class="card-title">Book Information</h6>
         <p class="card-text">
-          <strong>Título:</strong> {{ book.name }}<br>
-          <strong>Autor:</strong> {{ book.author.name }}<br>
-          <strong>Fecha:</strong> {{ book.publication_date|default:"No especificada" }}
+          <strong>Title:</strong> {{ book.name }}<br>
+          <strong>Author:</strong> {{ book.author.name }}<br>
+          <strong>Publication date:</strong> {{ book.publication_date|default:"Not specified" }}
         </p>
         {% if book.summary %}
           <p class="card-text">
-            <strong>Resumen:</strong><br>
+            <strong>Summary:</strong><br>
             <small class="text-muted">{{ book.summary|truncatechars:150 }}</small>
           </p>
         {% endif %}

@@ -36,4 +36,4 @@ media/
 local_settings.py
 docker/
 __pycache__/
-*.pyc
+*.py[cod]

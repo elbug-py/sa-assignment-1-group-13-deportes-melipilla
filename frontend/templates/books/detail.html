@@ -3,12 +3,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h4">{{ book.name }}</h1>
-  <div>
-    <a class="btn btn-outline-info" href="{% url 'book_reviews' book.id %}">Ver Reseñas</a>
-    <a class="btn btn-outline-success" href="{% url 'book_sales' book.id %}">Ver Ventas</a>
-    <a class="btn btn-outline-primary" href="{% url 'book_edit' book.id %}">Editar</a>
-    <a class="btn btn-outline-danger" href="{% url 'book_delete' book.id %}">Eliminar</a>
-    <a class="btn btn-outline-secondary" href="{% url 'books_table' %}">Volver</a>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-info" href="{% url 'book_reviews' book.id %}">View Reviews</a>
+    <a class="btn btn-outline-success" href="{% url 'book_sales' book.id %}">View Sales</a>
+    <a class="btn btn-outline-primary" href="{% url 'book_edit' book.id %}">Edit</a>
+    <a class="btn btn-outline-danger" href="{% url 'book_delete' book.id %}">Delete</a>
+    <a class="btn btn-outline-secondary" href="{% url 'books_table' %}">Back</a>
   </div>
 </div>
 
@@ -16,22 +16,22 @@
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Información del Libro</h5>
+        <h5 class="card-title">Book Information</h5>
         <table class="table table-borderless">
           <tr>
-            <td><strong>Título:</strong></td>
+            <td><strong>Title:</strong></td>
             <td>{{ book.name }}</td>
           </tr>
           <tr>
-            <td><strong>Autor:</strong></td>
+            <td><strong>Author:</strong></td>
             <td>{{ book.author.name }}</td>
           </tr>
           <tr>
-            <td><strong>Fecha de Publicación:</strong></td>
+            <td><strong>Publication Date:</strong></td>
             <td>{{ book.publication_date|default:"-" }}</td>
           </tr>
           <tr>
-            <td><strong>Resumen:</strong></td>
+            <td><strong>Summary:</strong></td>
             <td>{{ book.summary|default:"-" }}</td>
           </tr>
         </table>
@@ -42,21 +42,21 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Estadísticas de Ventas</h5>
+        <h5 class="card-title">Sales Statistics</h5>
         <div class="row text-center">
           <div class="col-6">
             <h3 class="text-primary">{{ total_sales }}</h3>
-            <small class="text-muted">Total Vendidos</small>
+            <small class="text-muted">Total Sold</small>
           </div>
           <div class="col-6">
             <h3 class="text-success">{{ sales_count }}</h3>
-            <small class="text-muted">Años con Ventas</small>
+            <small class="text-muted">Years with Sales</small>
           </div>
         </div>
         
         {% if sales_by_year %}
           <hr>
-          <h6>Ventas por Año</h6>
+          <h6>Sales by Year</h6>
           <div class="small">
             {% for year, count in sales_by_year.items %}
               <div class="d-flex justify-content-between">
@@ -69,7 +69,7 @@
         
         <hr>
         <div class="d-grid">
-          <a class="btn btn-success btn-sm" href="{% url 'sale_create' book.id %}">Agregar Ventas</a>
+          <a class="btn btn-success btn-sm" href="{% url 'sale_create' book.id %}">Add Sales</a>
         </div>
       </div>
     </div>

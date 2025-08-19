@@ -1,30 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Eliminar {{ author.name }}{% endblock %}
+{% block title %}Delete {{ author.name }}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h4">Eliminar Autor</h1>
-  <a class="btn btn-outline-secondary" href="{% url 'author_detail' author.id %}">Cancelar</a>
+  <h1 class="h4">Delete Author</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'author_detail' author.id %}">Cancel</a>
 </div>
 
 <div class="row">
   <div class="col-md-8">
     <div class="alert alert-warning">
-      <h5>¿Estás seguro?</h5>
-      <p>Esta acción eliminará permanentemente al autor <strong>{{ author.name }}</strong> y todos sus libros asociados.</p>
+      <h5>Are you sure?</h5>
+      <p>This action will permanently delete the author <strong>{{ author.name }}</strong> and all associated books.</p>
     </div>
     
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">{{ author.name }}</h5>
-        <p><strong>País:</strong> {{ author.origin_country|default:"-" }}</p>
-        <p><strong>Descripción:</strong> {{ author.description|default:"-" }}</p>
+        <p><strong>Country:</strong> {{ author.origin_country|default:"-" }}</p>
+        <p><strong>Description:</strong> {{ author.description|default:"-" }}</p>
       </div>
     </div>
     
     <form method="post" class="mt-3">
       {% csrf_token %}
-      <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
-      <a class="btn btn-outline-secondary" href="{% url 'author_detail' author.id %}">Cancelar</a>
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      <a class="btn btn-outline-secondary" href="{% url 'author_detail' author.id %}">Cancel</a>
     </form>
   </div>
 </div>

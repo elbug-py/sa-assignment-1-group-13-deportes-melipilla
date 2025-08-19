@@ -3,10 +3,10 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h4">{{ author.name }}</h1>
-  <div>
-    <a class="btn btn-outline-primary" href="{% url 'author_edit' author.id %}">Editar</a>
-    <a class="btn btn-outline-danger" href="{% url 'author_delete' author.id %}">Eliminar</a>
-    <a class="btn btn-outline-secondary" href="{% url 'authors_table' %}">Volver</a>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-primary" href="{% url 'author_edit' author.id %}">Edit</a>
+    <a class="btn btn-outline-danger" href="{% url 'author_delete' author.id %}">Delete</a>
+    <a class="btn btn-outline-secondary" href="{% url 'authors_table' %}">Back</a>
   </div>
 </div>
 
@@ -14,22 +14,22 @@
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Información del Autor</h5>
+        <h5 class="card-title">Author Information</h5>
         <table class="table table-borderless">
           <tr>
-            <td><strong>Nombre:</strong></td>
+            <td><strong>Name:</strong></td>
             <td>{{ author.name }}</td>
           </tr>
           <tr>
-            <td><strong>Fecha de Nacimiento:</strong></td>
+            <td><strong>Birthdate:</strong></td>
             <td>{{ author.birthday|default:"-" }}</td>
           </tr>
           <tr>
-            <td><strong>País de Origen:</strong></td>
+            <td><strong>Country of Origin:</strong></td>
             <td>{{ author.origin_country|default:"-" }}</td>
           </tr>
           <tr>
-            <td><strong>Descripción:</strong></td>
+            <td><strong>Description:</strong></td>
             <td>{{ author.description|default:"-" }}</td>
           </tr>
         </table>

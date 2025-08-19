@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Autores{% endblock %}
+{% block title %}Authors{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h4">Autores</h1>
-  <a class="btn btn-primary" href="{% url 'author_create' %}">Nuevo Autor</a>
+  <h1 class="h4">Authors</h1>
+  <a class="btn btn-primary" href="{% url 'author_create' %}">New Author</a>
 </div>
 
 <form class="mb-3">
   <div class="row g-2">
     <div class="col-md-4">
-      <input class="form-control" name="name" placeholder="Filtrar por nombre" value="{{ filters.name }}">
+      <input class="form-control" name="name" placeholder="Filter by name" value="{{ filters.name }}">
     </div>
     <div class="col-md-4">
-      <input class="form-control" name="country" placeholder="Filtrar por país" value="{{ filters.country }}">
+      <input class="form-control" name="country" placeholder="Filter by country" value="{{ filters.country }}">
     </div>
     <div class="col-md-4">
-      <button class="btn btn-outline-primary">Filtrar</button>
+      <button class="btn btn-outline-primary">Filter</button>
     </div>
   </div>
 </form>
@@ -25,12 +25,32 @@
   <table class="table table-sm align-middle">
     <thead>
       <tr>
-        <th><a href="?sort=name&order={% if sort == 'name' and order == 'asc' %}desc{% else %}asc{% endif %}">Nombre</a></th>
-        <th><a href="?sort=country&order={% if sort == 'country' and order == 'asc' %}desc{% else %}asc{% endif %}">País</a></th>
-        <th><a href="?sort=books&order={% if sort == 'books' and order == 'asc' %}desc{% else %}asc{% endif %}">Libros</a></th>
-        <th><a href="?sort=score&order={% if sort == 'score' and order == 'asc' %}desc{% else %}asc{% endif %}">Promedio</a></th>
-        <th><a href="?sort=sales&order={% if sort == 'sales' and order == 'asc' %}desc{% else %}asc{% endif %}">Ventas</a></th>
-        <th>Acciones</th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=name&order={% if sort == 'name' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Name
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=country&order={% if sort == 'country' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Country
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=books&order={% if sort == 'books' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Books
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=score&order={% if sort == 'score' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Average
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=sales&order={% if sort == 'sales' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Sales
+          </a>
+        </th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -42,25 +62,37 @@
         <td>{{ author.avg_score }}</td>
         <td>{{ author.total_sales }}</td>
         <td>
-          <a class="btn btn-sm btn-outline-primary" href="{% url 'author_edit' author.id %}">Editar</a>
-          <a class="btn btn-sm btn-outline-danger" href="{% url 'author_delete' author.id %}">Eliminar</a>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'author_edit' author.id %}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'author_delete' author.id %}">Delete</a>
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="text-center text-muted">No hay autores</td></tr>
+      <tr><td colspan="6" class="text-center text-muted">No authors</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
-<nav>
+<nav aria-label="Pagination">
   <ul class="pagination">
     {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?{{ base_qs }}&page={{ page_obj.previous_page_number }}">Anterior</a></li>
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}{% if base_qs %}&{{ base_qs }}{% endif %}{% if sort %}&sort={{ sort|urlencode }}{% endif %}{% if order %}&order={{ order|urlencode }}{% endif %}">
+          Previous
+        </a>
+      </li>
     {% endif %}
-    <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
     {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?{{ base_qs }}&page={{ page_obj.next_page_number }}">Siguiente</a></li>
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}{% if base_qs %}&{{ base_qs }}{% endif %}{% if sort %}&sort={{ sort|urlencode }}{% endif %}{% if order %}&order={{ order|urlencode }}{% endif %}">
+          Next
+        </a>
+      </li>
     {% endif %}
   </ul>
 </nav>
