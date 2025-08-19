@@ -28,7 +28,7 @@ This project is a web application developed with Django and MongoDB (mongoengine
 3. Seed the database:
 
    ```sh
-   docker-compose exec web python manage.py seed
+   docker compose exec core python manage.py seed
    ```
 
 4. Access the web:
