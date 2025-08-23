@@ -28,7 +28,7 @@ This project is a web application developed with Django and MongoDB (mongoengine
 
 3. Access the Web project
 
-   url: http://localhost:8000/
+   url: **http://localhost:8000/**
 
 ---
 
