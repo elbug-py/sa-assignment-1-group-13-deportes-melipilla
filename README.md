@@ -4,12 +4,13 @@ This project is a web application developed with Django and MongoDB (mongoengine
 
 ## Requirements
 
-- Python 3.10+
-- MongoDB (local or Docker)
+- Python 3.13
+- MongoDB
 - Django
-- Docker and docker-compose (recommended)
+- Docker and docker-compose
+- Apache Mesos (no need to install anything, as it is automatically started with Zookeeper via Docker containers)
 
-## Running with Docker (recommended)
+## Running with Docker
 
 1. Clone the repository:
 
@@ -18,23 +19,16 @@ This project is a web application developed with Django and MongoDB (mongoengine
    cd sa-assignment-1-group-13-deportes-melipilla
    ```
 
-2. Start the services:
+2. Start the services (The processes of populating the database and starting Mesos are automated):
 
    ```sh
    cd docker
    docker-compose up --build
    ```
 
-3. Seed the database:
+3. Access the Web project
 
-   ```sh
-   docker compose exec core python manage.py seed
-   ```
-
-4. Access the web:
-   (Not sure what to put here, ask the frontend team)
-
-Check the internal project documentation for model details and request examples (may not exist yet).
+   url: http://localhost:8000/
 
 ---
 
