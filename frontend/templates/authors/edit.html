@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ author.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Edit Author</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'author_detail' author.id %}">Cancel</a>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-lg-6">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-control" name="name" value="{{ author.name }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Birthdate</label>
+        <input type="date" class="form-control" name="birthday" value="{% if author.birthday %}{{ author.birthday|date:'Y-m-d' }}{% endif %}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Country of Origin</label>
+        <input type="text" class="form-control" name="origin_country" value="{{ author.origin_country|default:'' }}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description" rows="4">{{ author.description|default:'' }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

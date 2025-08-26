@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Top 50 Bestsellers{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Top 50 Bestselling Books</h1>
+<div class="table-responsive">
+<table class="table table-sm align-middle">
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Author</th>
+      <th class="text-end">Book sales</th>
+      <th class="text-end">Author sales</th>
+      <th class="text-center">Top-5 in publication year</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in items %}
+      <tr>
+        <td>{{ row.book.name }}</td>
+        <td>{{ row.book.author.name }}</td>
+        <td class="text-end">{{ row.total_book_sales }}</td>
+        <td class="text-end">{{ row.author_total_sales }}</td>
+        <td class="text-center">{% if row.in_top5_pub_year %}✅{% else %}—{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="text-center text-muted">No results</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

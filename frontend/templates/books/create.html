@@ -1,0 +1,39 @@
+{# /taspee/Documents/arch/sa-assignment-1-group-13-deportes-melipilla/frontend/templates/books/create.html #}
+{% extends "base.html" %}
+{% block title %}Create Book{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Create New Book</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'books_table' %}">Back</a>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-lg-6">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Title *</label>
+        <input type="text" class="form-control" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Author *</label>
+        <select class="form-control" name="author" required>
+          <option value="">Select author</option>
+          {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Publication Date</label>
+        <input type="date" class="form-control" name="publication_date">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Summary</label>
+        <textarea class="form-control" name="summary" rows="5"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Book</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

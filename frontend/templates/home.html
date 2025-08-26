@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Home · SA Library{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Dashboard</h1>
+<div class="row g-3">
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'authors_table' %}">
+      <div class="card-body">
+        <h5 class="card-title">Authors</h5>
+        <p class="card-text small mb-0">#Books · Avg. score · Total sales</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'books_table' %}">
+      <div class="card-body">
+        <h5 class="card-title">Books</h5>
+        <p class="card-text small mb-0">Manage books · Author · Publish date</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'top_rated' %}">
+      <div class="card-body">
+        <h5 class="card-title">Top 10 Highest Rated</h5>
+        <p class="card-text small mb-0">Includes highest-scored and lowest-scored reviews</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'top_selling' %}">
+      <div class="card-body">
+        <h5 class="card-title">Top 50 Bestsellers</h5>
+        <p class="card-text small mb-0">Book sales · Author sales · Top-5 in publication year</p>
+      </div>
+    </a>
+  </div>
+  <div class="col-12 col-md-6 col-xl-3">
+    <a class="card card-link h-100" href="{% url 'search_books' %}">
+      <div class="card-body">
+        <h5 class="card-title">Search</h5>
+        <p class="card-text small mb-0">Search by words in summary</p>
+      </div>
+    </a>
+  </div>
+</div>
+{% endblock %}

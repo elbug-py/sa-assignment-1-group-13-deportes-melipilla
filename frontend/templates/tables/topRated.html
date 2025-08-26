@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Top 10 Highest Rated{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Top 10 Highest-Rated Books</h1>
+<div class="table-responsive">
+<table class="table table-sm align-middle">
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Author</th>
+      <th class="text-end">Avg. score</th>
+      <th>Best review (highest score)</th>
+      <th>Worst review (lowest score)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in items %}
+      <tr>
+        <td>{{ row.book.name }}</td>
+        <td>{{ row.book.author.name }}</td>
+        <td class="text-end">{{ row.avg_score|floatformat:2 }}</td>
+        <td>
+          {% if row.best %}
+            <div>
+              <strong>{{ row.best.score }}/5</strong> ·  {{ row.best.up_votes }}<br>
+              {{ row.best.review|truncatechars:120 }}
+            </div>
+          {% else %}
+            <em>—</em>
+          {% endif %}
+        </td>
+        <td>
+          {% if row.worst %}
+            <div>
+              <strong>{{ row.worst.score }}/5</strong> ·  {{ row.worst.up_votes }}<br>
+              {{ row.worst.review|truncatechars:120 }}
+            </div>
+          {% else %}
+            <em>—</em>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="text-center text-muted">No results</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

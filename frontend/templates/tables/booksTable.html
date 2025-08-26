@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Books{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Books</h1>
+  <a class="btn btn-primary" href="{% url 'book_create' %}">New Book</a>
+</div>
+
+<form class="mb-3">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input class="form-control" name="name" placeholder="Filter by name" value="{{ filters.name }}">
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="author" placeholder="Filter by author" value="{{ filters.author }}">
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-primary">Filter</button>
+      <a class="btn btn-outline-secondary" href="?">Clear</a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=name&order={% if sort == 'name' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Book
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=author&order={% if sort == 'author' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Author
+          </a>
+        </th>
+        <th>
+          <a href="?{{ base_qs }}{% if base_qs %}&{% endif %}sort=date&order={% if sort == 'date' and order == 'asc' %}desc{% else %}asc{% endif %}">
+            Publication Date
+          </a>
+        </th>
+        <th>Summary</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in page_obj.object_list %}
+      <tr>
+        <td><a href="{% url 'book_detail' book.id %}">{{ book.name }}</a></td>
+        <td>{{ book.author.name }}</td>
+        <td>{{ book.publication_date|default:"-" }}</td>
+        <td>{{ book.summary|truncatechars:80|default:"-" }}</td>
+        <td class="text-nowrap">
+          <a class="btn btn-sm btn-outline-info" href="{% url 'book_reviews' book.id %}">Reviews</a>
+          <a class="btn btn-sm btn-outline-success" href="{% url 'book_sales' book.id %}">Sales</a>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'book_edit' book.id %}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" href "{% url 'book_delete' book.id %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center text-muted">No books</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<nav aria-label="Pagination">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}{% if base_qs %}&{{ base_qs }}{% endif %}{% if sort %}&sort={{ sort|urlencode }}{% endif %}{% if order %}&order={{ order|urlencode }}{% endif %}">
+          Previous
+        </a>
+      </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}{% if base_qs %}&{{ base_qs }}{% endif %}{% if sort %}&sort={{ sort|urlencode }}{% endif %}{% if order %}&order={{ order|urlencode }}{% endif %}">
+          Next
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

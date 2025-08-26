@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Search books</h1>
+
+<form class="d-flex gap-2 mb-3">
+  <input class="form-control" name="q" placeholder="e.g. magic dragon detective" value="{{ q }}">
+  <button class="btn btn-primary">Search</button>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr><th>Book</th><th>Author</th><th>Summary</th></tr>
+    </thead>
+    <tbody>
+      {% for b in page_obj.object_list %}
+      <tr>
+        <td>{{ b.name }}</td>
+        <td>{{ b.author.name }}</td>
+        <td>{{ b.summary|truncatechars:140 }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="text-center text-muted">No results</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<nav aria-label="Pagination">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a>
+      </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}
