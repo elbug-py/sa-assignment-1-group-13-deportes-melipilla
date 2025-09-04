@@ -1,55 +1,26 @@
+version: "3.8"
 services:
-  mongo:
-    image: mongo:6.0
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-
-  core:
-    build: 
+  django:
+    build:
       context: ..
-      dockerfile: docker/Dockerfile.core
-    container_name: sa_library_backend
-    command: /bin/sh -c "python manage.py seed && python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - ../:/app
-    working_dir: /app
+      dockerfile: Dockerfile.core
     ports:
       - "8000:8000"
+    environment:
+      - STATIC_SERVE=1 # Cambia a 0 si usas reverse proxy
     depends_on:
       - mongo
-
-  zookeeper:
-    image: zookeeper:3.7
-    container_name: zookeeper
+  mongo:
+    image: mongo:6
     ports:
-      - "2181:2181"
-
-  mesos-master:
-    image: mesosphere/mesos-master:1.7.1
-    container_name: mesos-master
-    environment:
-      - MESOS_ZK=zk://zookeeper:2181/mesos
-      - MESOS_PORT=5050
-      - MESOS_CLUSTER=sa-library-cluster
+      - "27017:27017"
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
     ports:
-      - "5050:5050"
+      - "80:80"
     depends_on:
-      - zookeeper
-
-  mesos-agent:
-    image: mesosphere/mesos-slave:1.7.1
-    container_name: mesos-agent
+      - django
     environment:
-      - MESOS_MASTER=zk://zookeeper:2181/mesos
-      - MESOS_PORT=5051
-    ports:
-      - "5051:5051"
-    depends_on:
-      - mesos-master
-      - zookeeper
-
-volumes:
-  mongo_data:
+      - VIRTUAL_HOST=app.localhost

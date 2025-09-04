@@ -5,6 +5,7 @@ class Author(me.Document):
     birthday = me.DateField()
     origin_country = me.StringField(max_length=100)
     description = me.StringField()
+    image = me.StringField()  # Guarda la ruta del archivo
 
     def __str__(self):
         return self.name
@@ -15,6 +16,7 @@ class Book(me.Document):
     name = me.StringField(required=True, max_length=200)
     summary = me.StringField()
     publication_date = me.DateField()
+    cover_image = me.StringField()  # Guarda la ruta del archivo
     meta = {
         'indexes': [
             {'fields': ['author', 'name'], 'unique': True}
