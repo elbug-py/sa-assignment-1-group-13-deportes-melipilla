@@ -21,7 +21,7 @@ def search_books(query):
     res = es.search(
         index="books",
         query={
-            "multi_match": {"query": query, "fields": ["name", "summary", "author"]}
+            "multi_match": {"query": query, "fields": ["name", "author", "summary"]}
         },
     )
     return [hit["_source"] for hit in res["hits"]["hits"]]

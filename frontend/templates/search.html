@@ -17,7 +17,7 @@
       {% for b in page_obj.object_list %}
       <tr>
         <td>{{ b.name }}</td>
-        <td>{{ b.author.name }}</td>
+        <td>{{ b.author }}</td>
         <td>{{ b.summary|truncatechars:140 }}</td>
       </tr>
       {% empty %}
