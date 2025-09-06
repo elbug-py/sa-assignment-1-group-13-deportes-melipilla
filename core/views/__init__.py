@@ -29,3 +29,6 @@ from .sale_views import (
     sale_delete,
     sale_detail,
 )
+
+from .elastic_views import search_books_view
+
