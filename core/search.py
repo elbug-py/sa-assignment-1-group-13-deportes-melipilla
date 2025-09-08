@@ -125,14 +125,23 @@ def bulk_index_sales(sales):
     bulk(es, actions)
 
 
-def search_books(query):
+def search_books(query, sort="name", order="asc"):
+    sort_field = f"{sort}.keyword" if sort in ["name", "author"] else sort
+    sort_clause = [{sort_field: {"order": order}}] if sort else None
+
     res = es.search(
         index="books",
         query={
-            "multi_match": {"query": query, "fields": ["name", "author", "summary"]}
+            "multi_match": {
+                "query": query,
+                "fields": ["name", "author", "summary"],
+                "fuzziness": "AUTO",
+            }
         },
+        sort=sort_clause,
+        size=100,
     )
-    return [hit["_source"] for hit in res["hits"]["hits"]]
+    return [{**hit["_source"], "id": hit["_id"]} for hit in res["hits"]["hits"]]
 
 
 def search_authors(query, sort="name", order="asc"):
@@ -153,7 +162,7 @@ def search_authors(query, sort="name", order="asc"):
         size=100,
     )
 
-    return [hit["_source"] for hit in res["hits"]["hits"]]
+    return [{**hit["_source"], "id": hit["_id"]} for hit in res["hits"]["hits"]]
 
 
 def search_reviews(query):

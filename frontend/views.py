@@ -5,6 +5,8 @@ from core.services import get_top_rated_books, get_authors_table, get_top_sellin
 from core.models import Author, Book, Review, Sale
 from core.search import search_books as es_search_books
 from core.search import search_authors as es_search_authors
+from core.search import search_reviews as es_search_reviews
+from core.search import search_sales as es_search_sales
 from urllib.parse import urlencode
 from datetime import datetime
 
@@ -135,34 +137,28 @@ def books_table(request):
         "name": (request.GET.get("name") or "").strip(),
         "author": (request.GET.get("author") or "").strip(),
     }
+    sort = request.GET.get("sort") or "name"
+    order = request.GET.get("order") or "asc"
 
-    qs = Book.objects.all()
-
-    if filters.get("name"):
-        qs = qs.filter(name__icontains=filters["name"])
-    if filters.get("author"):
-        qs = qs.filter(author__name__icontains=filters["author"])
-
-    sort = request.GET.get("sort")
-    order = request.GET.get("order")
-
-    if sort == "name":
-        qs = qs.order_by("-name" if order == "desc" else "name")
-    elif sort == "author":
-        qs = qs.order_by("-author__name" if order == "desc" else "author__name")
-    elif sort == "date":
-        qs = qs.order_by("-publication_date" if order == "desc" else "publication_date")
+    if not (filters["name"] or filters["author"]):
+        # fallback to Mongo service with sorting
+        data = Book.objects.all().order_by(f"{'' if order == 'asc' else '-'}{sort}")
     else:
-        qs = qs.order_by("name")
+        # ES search (you could add sorting here later with ES `sort=...`)
+        query = f"{filters['name']} {filters['author']}".strip()
+        data = es_search_books(query, sort, order)
 
-    paginator = Paginator(list(qs), 20)
+    paginator = Paginator(list(data), 20)
     page_obj = paginator.get_page(request.GET.get("page"))
+
+    # preserve query params for links
     base_params = {k: v for k, v in filters.items() if v}
     base_qs = urlencode(base_params)
 
+    print("data", data)
     ctx = {
         "page_obj": page_obj,
-        "filters": filters,
+        "filters": filters,  # template expects this
         "sort": sort,
         "order": order,
         "base_qs": base_qs,

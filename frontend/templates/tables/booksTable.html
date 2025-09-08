@@ -48,7 +48,7 @@
       {% for book in page_obj.object_list %}
       <tr>
         <td><a href="{% url 'book_detail' book.id %}">{{ book.name }}</a></td>
-        <td>{{ book.author.name }}</td>
+        <td>{{ book.author }}</td>
         <td>{{ book.publication_date|default:"-" }}</td>
         <td>{{ book.summary|truncatechars:80|default:"-" }}</td>
         <td class="text-nowrap">
