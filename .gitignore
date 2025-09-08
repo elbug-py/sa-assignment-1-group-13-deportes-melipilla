@@ -34,6 +34,5 @@ node_modules/
 staticfiles/
 media/
 local_settings.py
-docker/
 __pycache__/
 *.py[cod]
