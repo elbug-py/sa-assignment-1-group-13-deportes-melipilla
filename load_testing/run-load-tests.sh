@@ -2,6 +2,7 @@
 
 # Configuración
 DOCKER_COMPOSE_FILES=(
+    "docker-compose.full.yml"
     "docker-compose.yml"
     "docker-compose.cache.yml" 
     "docker-compose.elastic.yml"
