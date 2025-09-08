@@ -16,12 +16,6 @@
         {% if book.cover_image %}
           <img src="/media/{{ book.cover_image }}" alt="{{ book.name }}"
               class="img-fluid rounded mb-2" style="max-height: 220px; object-fit: cover;">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="remove_cover" id="remove_cover">
-            <label class="form-check-label" for="remove_cover">
-              Remove current cover
-            </label>
-          </div>
         {% else %}
           <div class="text-muted">No cover uploaded</div>
         {% endif %}
