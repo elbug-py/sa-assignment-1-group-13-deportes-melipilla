@@ -1,0 +1,70 @@
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  core:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.core
+    container_name: sa_library_backend
+    command: /bin/sh -c "python manage.py seed && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ../:/app
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  mesos-master:
+    image: mesosphere/mesos-master:1.7.1
+    container_name: mesos-master
+    environment:
+      - MESOS_ZK=zk://zookeeper:2181/mesos
+      - MESOS_PORT=5050
+      - MESOS_CLUSTER=sa-library-cluster
+    ports:
+      - "5050:5050"
+    depends_on:
+      - zookeeper
+
+  mesos-agent:
+    image: mesosphere/mesos-slave:1.7.1
+    container_name: mesos-agent
+    environment:
+      - MESOS_MASTER=zk://zookeeper:2181/mesos
+      - MESOS_PORT=5051
+    ports:
+      - "5051:5051"
+    depends_on:
+      - mesos-master
+      - zookeeper
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    container_name: elasticsearch
+    environment:
+      - ES_ENABLED=${ES_ENABLED:-"true"}
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+volumes:
+  mongo_data:
+
+  es_data:
