@@ -5,7 +5,12 @@ from faker import Faker
 from mongoengine.connection import get_db
 
 from core.models import Author, Book, Review, Sale
-from core.search import index_book
+from core.search import (
+    bulk_index_authors,
+    bulk_index_books,
+    bulk_index_reviews,
+    bulk_index_sales,
+)
 
 faker = Faker()
 
@@ -69,6 +74,11 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("✅ Seeding complete!"))
         self.stdout.write("⚡ Indexing Books in Elasticsearch...")
-        for book in Book.objects:
-            index_book(book)
+        bulk_index_books(Book.objects)
+        self.stdout.write("⚡ Indexing Authors in Elasticsearch...")
+        bulk_index_authors(Author.objects)
+        self.stdout.write("⚡ Indexing Reviews in Elasticsearch...")
+        bulk_index_reviews(Review.objects)
+        self.stdout.write("⚡ Indexing Sales in Elasticsearch...")
+        bulk_index_sales(Sale.objects)
         self.stdout.write(self.style.SUCCESS("✅ Indexing complete!"))

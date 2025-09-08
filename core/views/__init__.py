@@ -30,5 +30,9 @@ from .sale_views import (
     sale_detail,
 )
 
-from .elastic_views import search_books_view
-
+from .elastic_views import (
+    search_books_view,
+    search_authors_view,
+    search_reviews_view,
+    search_sales_view,
+)

@@ -21,6 +21,9 @@ from core.views import (
     sale_delete,
     sale_detail,
     search_books_view,
+    search_authors_view,
+    search_reviews_view,
+    search_sales_view,
 )
 
 urlpatterns = [
@@ -45,5 +48,7 @@ urlpatterns = [
     path("sales/<sale_id>/edit/", sale_edit, name="sale_edit"),
     path("sales/<sale_id>/delete/", sale_delete, name="sale_delete"),
     path("search/", search_books_view, name="search_books"),
+    path("search/authors/", search_authors_view, name="search_authors"),
+    path("search/reviews/", search_reviews_view, name="search_reviews"),
+    path("search/sales/", search_sales_view, name="search_sales"),
 ]
-

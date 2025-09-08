@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
 from core.services import get_top_rated_books, get_authors_table, get_top_selling_books
-from mongoengine.queryset.visitor import Q
-from core.services import search_books_by_summary
 from core.models import Author, Book, Review, Sale
 from core.search import search_books as es_search_books
+from core.search import search_authors as es_search_authors
 from urllib.parse import urlencode
 from datetime import datetime
 
@@ -19,17 +18,28 @@ def authors_table(request):
         "name": (request.GET.get("name") or "").strip(),
         "country": (request.GET.get("country") or "").strip(),
     }
-    sort = request.GET.get("sort")
-    order = request.GET.get("order")
-    data = get_authors_table(filters, sort, order)
-    paginator = Paginator(data, 20)
+    sort = request.GET.get("sort") or "name"
+    order = request.GET.get("order") or "asc"
+
+    if not (filters["name"] or filters["country"]):
+        # fallback to Mongo service with sorting
+        data = get_authors_table(filters, sort, order)
+    else:
+        # ES search (you could add sorting here later with ES `sort=...`)
+        query = f"{filters['name']} {filters['country']}".strip()
+        data = es_search_authors(query, sort, order)
+
+    paginator = Paginator(list(data), 20)
     page_obj = paginator.get_page(request.GET.get("page"))
+
+    # preserve query params for links
     base_params = {k: v for k, v in filters.items() if v}
     base_qs = urlencode(base_params)
 
+    print("data", data)
     ctx = {
         "page_obj": page_obj,
-        "filters": filters,
+        "filters": filters,  # template expects this
         "sort": sort,
         "order": order,
         "base_qs": base_qs,
