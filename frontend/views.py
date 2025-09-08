@@ -1,4 +1,9 @@
-from django.shortcuts import render, redirect
+
+import os, uuid
+from django.core.files.storage import default_storage
+from django.utils.text import get_valid_filename
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib import messages
 from core.services import (
@@ -18,6 +23,15 @@ import os
 load_dotenv()
 ES_ENABLED = os.getenv("ES_ENABLED", "false").lower() == "true"
 print("ES_ENABLED", ES_ENABLED)
+
+
+
+def _save_upload_and_get_relpath(uploaded, subdir):
+    base, ext = os.path.splitext(get_valid_filename(uploaded.name or "file"))
+    filename = f"{base}-{uuid.uuid4().hex}{ext.lower()}"
+    relpath = os.path.join(subdir, filename).replace("\\", "/")
+    default_storage.save(relpath, uploaded)
+    return relpath
 
 
 def home(request):
@@ -71,7 +85,10 @@ def author_create(request):
 
             author.origin_country = request.POST.get("origin_country", "").strip()
             author.description = request.POST.get("description", "").strip()
-
+            photo_file = request.FILES.get("image")
+            if photo_file:
+                author.image = _save_upload_and_get_relpath(photo_file, "authors")
+               
             author.save()
             messages.success(request, f"Autor '{author.name}' creado exitosamente.")
             return redirect("authors_table")
@@ -110,6 +127,9 @@ def author_edit(request, author_id):
 
             author.origin_country = request.POST.get("origin_country", "").strip()
             author.description = request.POST.get("description", "").strip()
+            photo_file = request.FILES.get("image")
+            if photo_file:
+                author.image = _save_upload_and_get_relpath(photo_file, "authors")
 
             author.save()
             messages.success(
@@ -195,7 +215,10 @@ def book_create(request):
                 ).date()
 
             book.summary = request.POST.get("summary", "").strip()
-
+            cover_file = request.FILES.get("cover_image")
+            if cover_file:
+                book.cover_image = _save_upload_and_get_relpath(cover_file, "books")
+        
             book.save()
             messages.success(request, f"Libro '{book.name}' creado exitosamente.")
             return redirect("books_table")
@@ -254,6 +277,9 @@ def book_edit(request, book_id):
                 book.publication_date = None
 
             book.summary = request.POST.get("summary", "").strip()
+            cover_file = request.FILES.get("cover_image")
+            if cover_file:
+                book.cover_image = _save_upload_and_get_relpath(cover_file, "books")
 
             book.save()
             messages.success(request, f"Libro '{book.name}' actualizado exitosamente.")

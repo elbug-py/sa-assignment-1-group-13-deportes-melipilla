@@ -11,6 +11,26 @@
 </div>
 
 <div class="row">
+  {# NUEVA COLUMNA CON LA IMAGEN #}
+  <div class="col-md-4 mb-3">
+    <div class="card">
+      <div class="card-body text-center">
+        {% if author.image %}
+          <img
+            src="/media/{{ author.image }}"
+            alt="{{ author.name }}"
+            class="img-fluid rounded"
+            style="max-height: 260px; object-fit: cover;"
+          />
+        {% else %}
+          <div class="text-muted" style="height: 200px; display: grid; place-items: center;">
+            No photo uploaded
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">

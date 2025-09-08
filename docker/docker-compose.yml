@@ -7,11 +7,17 @@ services:
       - "8000:8000"
     environment:
       - STATIC_SERVE=1
+<<<<<<< HEAD
       - DB_HOST=mongo
       - DB_PORT=27017
       - DB_NAME=library_db
+=======
+>>>>>>> 0b4a28f1df1a8a61882d989c33db84aa753bd378
     depends_on:
       - mongo
+    volumes:
+      - ../media:/app/media  
+
   mongo:
     image: mongo:6
     ports:
