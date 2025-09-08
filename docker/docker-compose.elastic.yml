@@ -12,6 +12,12 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.core
     container_name: sa_library_backend
+    environment:
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_NAME=library_db
+      - ES_ENABLED=${ES_ENABLED:-"true"}
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     command: /bin/sh -c "python manage.py seed && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ../:/app
@@ -20,6 +26,7 @@ services:
       - "8000:8000"
     depends_on:
       - mongo
+      - elasticsearch
 
   zookeeper:
     image: zookeeper:3.7

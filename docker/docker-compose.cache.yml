@@ -21,6 +21,9 @@ services:
     environment:
       - CACHE_ENABLED=true
       - REDIS_URL=redis://redis:6379/0
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_NAME=library_db
     command: /bin/sh -c "python manage.py seed && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ../:/app
@@ -29,6 +32,7 @@ services:
       - "8000:8000"
     depends_on:
       - mongo
+      - redis
 
   zookeeper:
     image: zookeeper:3.7
