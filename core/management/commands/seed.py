@@ -3,6 +3,8 @@ from datetime import date
 from django.core.management.base import BaseCommand
 from faker import Faker
 from mongoengine.connection import get_db
+from dotenv import load_dotenv
+import os
 
 from core.models import Author, Book, Review, Sale
 from core.search import (
@@ -13,6 +15,8 @@ from core.search import (
 )
 
 faker = Faker()
+load_dotenv()
+ES_ENABLED = os.getenv("ES_ENABLED", "false").lower() == "true"
 
 
 class Command(BaseCommand):
@@ -71,6 +75,11 @@ class Command(BaseCommand):
 
             book.total_sales = total_sales
             book.save()
+
+        print("Is Elasticsearch enabled?", ES_ENABLED)
+        if not ES_ENABLED:
+            self.stdout.write(self.style.SUCCESS("✅ Seeding complete!"))
+            return
 
         self.stdout.write(self.style.SUCCESS("✅ Seeding complete!"))
         self.stdout.write("⚡ Indexing Books in Elasticsearch...")

@@ -1,14 +1,23 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
-from core.services import get_top_rated_books, get_authors_table, get_top_selling_books
+from core.services import (
+    get_top_rated_books,
+    get_authors_table,
+    get_top_selling_books,
+    search_books_by_summary,
+)
 from core.models import Author, Book, Review, Sale
 from core.search import search_books as es_search_books
 from core.search import search_authors as es_search_authors
-from core.search import search_reviews as es_search_reviews
-from core.search import search_sales as es_search_sales
 from urllib.parse import urlencode
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+ES_ENABLED = os.getenv("ES_ENABLED", "false").lower() == "true"
+print("ES_ENABLED", ES_ENABLED)
 
 
 def home(request):
@@ -16,15 +25,17 @@ def home(request):
 
 
 def authors_table(request):
+    # If elastic is disabled, always use Mongo service
+
     filters = {
         "name": (request.GET.get("name") or "").strip(),
         "country": (request.GET.get("country") or "").strip(),
     }
     sort = request.GET.get("sort") or "name"
     order = request.GET.get("order") or "asc"
-
-    if not (filters["name"] or filters["country"]):
+    if not (filters["name"] or filters["country"]) or not ES_ENABLED:
         # fallback to Mongo service with sorting
+        print("Using Mongo service for authors table")
         data = get_authors_table(filters, sort, order)
     else:
         # ES search (you could add sorting here later with ES `sort=...`)
@@ -38,7 +49,6 @@ def authors_table(request):
     base_params = {k: v for k, v in filters.items() if v}
     base_qs = urlencode(base_params)
 
-    print("data", data)
     ctx = {
         "page_obj": page_obj,
         "filters": filters,  # template expects this
@@ -140,8 +150,9 @@ def books_table(request):
     sort = request.GET.get("sort") or "name"
     order = request.GET.get("order") or "asc"
 
-    if not (filters["name"] or filters["author"]):
+    if not (filters["name"] or filters["author"]) or not ES_ENABLED:
         # fallback to Mongo service with sorting
+        print("Using Mongo service for books table")
         data = Book.objects.all().order_by(f"{'' if order == 'asc' else '-'}{sort}")
     else:
         # ES search (you could add sorting here later with ES `sort=...`)
@@ -155,7 +166,6 @@ def books_table(request):
     base_params = {k: v for k, v in filters.items() if v}
     base_qs = urlencode(base_params)
 
-    print("data", data)
     ctx = {
         "page_obj": page_obj,
         "filters": filters,  # template expects this
@@ -427,12 +437,19 @@ def top_rated(request):
 
 
 def search_books(request):
+
     q = (request.GET.get("q") or "").strip()
+
     results = []
+
+    # If elastic is disabled, always use Mongo service
+
+    if (q and not ES_ENABLED) or not q:
+        print("Using Mongo search")
+        results = search_books_by_summary(q)
     if q:
         results = es_search_books(q)  # returns list of dicts normalized for template
 
-    print("results", results)
     paginator = Paginator(results, 20)  # paginate ES results like before
     page_obj = paginator.get_page(request.GET.get("page"))
 
