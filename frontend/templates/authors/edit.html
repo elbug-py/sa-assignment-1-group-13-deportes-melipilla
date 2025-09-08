@@ -8,8 +8,31 @@
 
 <div class="row">
   <div class="col-md-8 col-lg-6">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+
+      {# --- vista previa de la foto actual --- #}
+      <div class="mb-3 text-center">
+        {% if author.image %}
+          <img src="/media/{{ author.image }}" alt="{{ author.name }}"
+              class="img-fluid rounded mb-2" style="max-height: 220px; object-fit: cover;">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="remove_image" id="remove_image">
+            <label class="form-check-label" for="remove_image">
+              Remove current photo
+            </label>
+          </div>
+        {% else %}
+          <div class="text-muted">No photo uploaded</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">New photo (optional)</label>
+        <input type="file" class="form-control" name="image" accept="image/*">
+        <div class="form-text">Uploading a new photo will replace the previous one.</div>
+      </div>
+
       <div class="mb-3">
         <label class="form-label">Name *</label>
         <input type="text" class="form-control" name="name" value="{{ author.name }}" required>
