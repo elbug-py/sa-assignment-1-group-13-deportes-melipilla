@@ -14,15 +14,44 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: app
-                      domains: ["app.localhost"]
+                    - name: sa_library
+                      domains: ["*"]
                       routes:
+                        # Ruta para archivos estáticos
+                        - match:
+                            prefix: "/static/"
+                          route:
+                            cluster: django_app
+                        # Ruta para archivos media
+                        - match:
+                            prefix: "/media/"
+                          route:
+                            cluster: django_app
+                        # Ruta para la API
+                        - match:
+                            prefix: "/api/"
+                          route:
+                            cluster: django_app
+                        # Ruta para Elasticsearch (opcional, para debugging)
+                        - match:
+                            prefix: "/elasticsearch/"
+                          route:
+                            cluster: elasticsearch_cluster
+                            prefix_rewrite: "/"
+                        # Ruta para Redis (opcional, para debugging)
+                        - match:
+                            prefix: "/redis/"
+                          route:
+                            cluster: redis_cluster
+                            prefix_rewrite: "/"
+                        # Todas las demás rutas van a Django
                         - match:
                             prefix: "/"
                           route:
                             cluster: django_app
                 http_filters:
                   - name: envoy.filters.http.router
+
   clusters:
     - name: django_app
       connect_timeout: 0.25s
@@ -37,3 +66,37 @@ static_resources:
                     socket_address:
                       address: django
                       port_value: 8000
+    
+    - name: elasticsearch_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: elasticsearch_cluster
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: elasticsearch
+                      port_value: 9200
+
+    - name: redis_cluster
+      connect_timeout: 0.25s
+      type: logical_dns
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: redis_cluster
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: redis
+                      port_value: 6379
+
+admin:
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901

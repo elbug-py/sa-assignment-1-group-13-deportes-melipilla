@@ -1,9 +1,29 @@
 from django.urls import path
 from core.views import (
-    author_list, author_create, author_edit, author_delete, author_detail,
-    book_list, book_create, book_edit, book_delete, book_detail,
-    review_list, review_create, review_edit, review_delete, review_detail,
-    sale_list, sale_create, sale_edit, sale_delete, sale_detail
+    author_list,
+    author_create,
+    author_edit,
+    author_delete,
+    author_detail,
+    book_list,
+    book_create,
+    book_edit,
+    book_delete,
+    book_detail,
+    review_list,
+    review_create,
+    review_edit,
+    review_delete,
+    review_detail,
+    sale_list,
+    sale_create,
+    sale_edit,
+    sale_delete,
+    sale_detail,
+    search_books_view,
+    search_authors_view,
+    search_reviews_view,
+    search_sales_view,
 )
 
 urlpatterns = [
@@ -17,7 +37,7 @@ urlpatterns = [
     path("books/<book_id>/", book_detail, name="book_detail"),
     path("books/<book_id>/edit/", book_edit, name="book_edit"),
     path("books/<book_id>/delete/", book_delete, name="book_delete"),
-    path("reviews/", review_list, name="review_list"),  
+    path("reviews/", review_list, name="review_list"),
     path("reviews/new/", review_create, name="review_create"),
     path("reviews/<review_id>/", review_detail, name="review_detail"),
     path("reviews/<review_id>/edit/", review_edit, name="review_edit"),
@@ -27,4 +47,8 @@ urlpatterns = [
     path("sales/<sale_id>/", sale_detail, name="sale_detail"),
     path("sales/<sale_id>/edit/", sale_edit, name="sale_edit"),
     path("sales/<sale_id>/delete/", sale_delete, name="sale_delete"),
+    path("search/", search_books_view, name="search_books"),
+    path("search/authors/", search_authors_view, name="search_authors"),
+    path("search/reviews/", search_reviews_view, name="search_reviews"),
+    path("search/sales/", search_sales_view, name="search_sales"),
 ]
