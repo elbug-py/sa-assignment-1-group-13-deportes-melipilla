@@ -3,11 +3,11 @@ services:
   django:
     build:
       context: ..
-      dockerfile: Dockerfile.core
+      dockerfile: docker\Dockerfile.core
     ports:
       - "8000:8000"
     environment:
-      - STATIC_SERVE=1 # Cambia a 0 si usas reverse proxy
+      - STATIC_SERVE=0
     depends_on:
       - mongo
   mongo:
@@ -22,5 +22,3 @@ services:
       - "80:80"
     depends_on:
       - django
-    environment:
-      - VIRTUAL_HOST=app.localhost
