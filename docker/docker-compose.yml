@@ -3,7 +3,7 @@ services:
   django:
     build:
       context: ..
-      dockerfile: Dockerfile.core
+      dockerfile: docker/Dockerfile.core
     ports:
       - "8000:8000"
     environment:

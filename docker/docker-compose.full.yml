@@ -1,0 +1,123 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - sa-library-network
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - sa-library-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - sa-library-network
+
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - sa-library-network
+
+  mesos-master:
+    image: mesosphere/mesos-master:1.7.1
+    container_name: mesos-master
+    environment:
+      - MESOS_ZK=zk://zookeeper:2181/mesos
+      - MESOS_PORT=5050
+      - MESOS_CLUSTER=sa-library-cluster
+    ports:
+      - "5050:5050"
+    depends_on:
+      - zookeeper
+    networks:
+      - sa-library-network
+
+  mesos-agent:
+    image: mesosphere/mesos-slave:1.7.1
+    container_name: mesos-agent
+    environment:
+      - MESOS_MASTER=zk://zookeeper:2181/mesos
+      - MESOS_PORT=5051
+    ports:
+      - "5051:5051"
+    depends_on:
+      - mesos-master
+      - zookeeper
+    networks:
+      - sa-library-network
+
+  django:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.core  # Esta ruta es correcta desde la raíz del proyecto
+    container_name: sa_library_backend
+    environment:
+      - STATIC_SERVE=0
+      - CACHE_ENABLED=true
+      - REDIS_URL=redis://redis:6379/0
+      - ES_ENABLED=true
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_NAME=library_db
+    command: /bin/sh -c "python manage.py seed && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ../:/app
+    working_dir: /app
+    expose:
+      - "8000"
+    depends_on:
+      - mongo
+      - redis
+      - elasticsearch
+    networks:
+      - sa-library-network
+
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    container_name: envoy_proxy
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "80:80"
+      - "9901:9901"  # Puerto de administración de Envoy
+    depends_on:
+      - django
+    networks:
+      - sa-library-network
+
+volumes:
+  mongo_data:
+  es_data:
+
+networks:
+  sa-library-network:
+    driver: bridge
