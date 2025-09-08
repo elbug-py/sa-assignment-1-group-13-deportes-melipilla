@@ -7,9 +7,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - STATIC_SERVE=1 # Cambia a 0 si usas reverse proxy
+      - STATIC_SERVE=1
     depends_on:
       - mongo
+    volumes:
+      - ../media:/app/media  
+
   mongo:
     image: mongo:6
     ports:
